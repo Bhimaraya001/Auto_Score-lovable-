@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      evaluations: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          id: string
+          marks: number
+          max_marks: number
+          reference_answer: string | null
+          review: string | null
+          student_answer: string | null
+          student_id: string
+          student_name: string
+          subject: string
+          teacher_id: string
+          updated_at: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          marks: number
+          max_marks: number
+          reference_answer?: string | null
+          review?: string | null
+          student_answer?: string | null
+          student_id: string
+          student_name: string
+          subject: string
+          teacher_id: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          marks?: number
+          max_marks?: number
+          reference_answer?: string | null
+          review?: string | null
+          student_answer?: string | null
+          student_id?: string
+          student_name?: string
+          subject?: string
+          teacher_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

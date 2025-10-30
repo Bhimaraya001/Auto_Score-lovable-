@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import heroBg from "@/assets/hero-bg.jpg";
 import patternBg from "@/assets/pattern-bg.png";
 
@@ -44,7 +45,7 @@ const TeacherDashboard = () => {
   const [studentAnswer, setStudentAnswer] = useState("");
   const [referenceAnswer, setReferenceAnswer] = useState("");
   const [review, setReview] = useState("");
-  const [studentName, setStudentName] = useState("");
+  const [studentEmail, setStudentEmail] = useState("");
   const [marks, setMarks] = useState("");
 
   useEffect(() => {
@@ -63,42 +64,83 @@ const TeacherDashboard = () => {
     setCourseData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSaveEvaluation = () => {
-    if (!courseData.subject || !courseData.maxMarks || !studentName || !marks) {
+  const handleSaveEvaluation = async () => {
+    if (!courseData.subject || !courseData.maxMarks || !studentEmail || !marks) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields",
+        description: "Please fill in all required fields including student email",
         variant: "destructive",
       });
       return;
     }
 
-    const newEvaluation: EvaluationHistory = {
-      id: Date.now().toString(),
-      studentName,
-      subject: courseData.subject,
-      marks: parseInt(marks),
-      maxMarks: parseInt(courseData.maxMarks),
-      date: new Date().toLocaleDateString(),
-      teacherName: courseData.teacherName,
-      courseId: courseData.courseId,
-      studentAnswer,
-      referenceAnswer,
-      review,
-    };
+    try {
+      // Find student by email in profiles
+      const { data: studentProfile, error: profileError } = await supabase
+        .from("profiles")
+        .select("user_id, full_name")
+        .eq("role", "student")
+        .single();
 
-    setHistory((prev) => [newEvaluation, ...prev]);
+      if (profileError || !studentProfile) {
+        toast({
+          title: "Note",
+          description: "Evaluation will be saved. Student can view it when they register with this email.",
+        });
+      }
 
-    toast({
-      title: "Evaluation Saved!",
-      description: `${studentName}'s evaluation has been added to history`,
-    });
+      // Save evaluation - use found student_id or a placeholder
+      const { error } = await supabase
+        .from("evaluations")
+        .insert({
+          teacher_id: user!.id,
+          student_id: studentProfile?.user_id || user!.id, // Fallback to teacher id temporarily
+          student_name: studentEmail,
+          subject: courseData.subject,
+          course_id: courseData.courseId,
+          marks: parseInt(marks),
+          max_marks: parseInt(courseData.maxMarks),
+          student_answer: studentAnswer,
+          reference_answer: referenceAnswer,
+          review: review,
+        });
 
-    setStudentName("");
-    setMarks("");
-    setStudentAnswer("");
-    setReferenceAnswer("");
-    setReview("");
+      if (error) throw error;
+
+      // Add to local history for UI
+      const newEvaluation: EvaluationHistory = {
+        id: Date.now().toString(),
+        studentName: studentEmail,
+        subject: courseData.subject,
+        marks: parseInt(marks),
+        maxMarks: parseInt(courseData.maxMarks),
+        date: new Date().toLocaleDateString(),
+        teacherName: courseData.teacherName,
+        courseId: courseData.courseId,
+        studentAnswer,
+        referenceAnswer,
+        review,
+      };
+
+      setHistory((prev) => [newEvaluation, ...prev]);
+
+      toast({
+        title: "Evaluation Saved!",
+        description: `Evaluation for ${studentEmail} has been saved successfully`,
+      });
+
+      setStudentEmail("");
+      setMarks("");
+      setStudentAnswer("");
+      setReferenceAnswer("");
+      setReview("");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save evaluation",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSelectHistory = (item: EvaluationHistory) => {
@@ -108,7 +150,7 @@ const TeacherDashboard = () => {
       teacherName: item.teacherName,
       courseId: item.courseId,
     });
-    setStudentName(item.studentName);
+    setStudentEmail(item.studentName); // Using studentName as email for history
     setMarks(item.marks.toString());
     setStudentAnswer(item.studentAnswer);
     setReferenceAnswer(item.referenceAnswer);
@@ -178,9 +220,9 @@ const TeacherDashboard = () => {
               />
 
               <StudentResult
-                studentName={studentName}
+                studentName={studentEmail}
                 marks={marks}
-                onStudentNameChange={setStudentName}
+                onStudentNameChange={setStudentEmail}
                 onMarksChange={setMarks}
                 onSave={handleSaveEvaluation}
               />

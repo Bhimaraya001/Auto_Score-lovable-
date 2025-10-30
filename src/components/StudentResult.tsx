@@ -34,11 +34,12 @@ const StudentResult = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="space-y-2">
           <Label htmlFor="studentName" className="text-sm font-medium">
-            Student Name
+            Student Email
           </Label>
           <Input
             id="studentName"
-            placeholder="Enter student name"
+            type="email"
+            placeholder="Enter student email"
             value={studentName}
             onChange={(e) => onStudentNameChange(e.target.value)}
             className="transition-smooth focus:shadow-card"
