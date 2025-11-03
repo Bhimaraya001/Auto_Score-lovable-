@@ -47,6 +47,7 @@ const TeacherDashboard = () => {
   const [review, setReview] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
   const [marks, setMarks] = useState("");
+  const [evaluating, setEvaluating] = useState(false);
 
   useEffect(() => {
     if (!loading && (!user || profile?.role !== "teacher")) {
@@ -62,6 +63,48 @@ const TeacherDashboard = () => {
 
   const handleCourseDataChange = (field: string, value: string) => {
     setCourseData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAutoEvaluate = async () => {
+    if (!referenceAnswer || !studentAnswer || !courseData.maxMarks) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide both reference and student answers, and set max marks",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setEvaluating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("evaluate-answer", {
+        body: {
+          referenceAnswer,
+          studentAnswer,
+          maxMarks: parseInt(courseData.maxMarks),
+        },
+      });
+
+      if (error) throw error;
+
+      // Update the form with AI-generated evaluation
+      setMarks(Math.round(data.marks).toString());
+      setReview(data.feedback);
+
+      toast({
+        title: "Auto-Evaluation Complete!",
+        description: `Score: ${data.score.toFixed(2)} | Marks: ${Math.round(data.marks)}/${courseData.maxMarks}`,
+      });
+    } catch (error: any) {
+      console.error("Error evaluating answer:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to evaluate answer",
+        variant: "destructive",
+      });
+    } finally {
+      setEvaluating(false);
+    }
   };
 
   const handleSaveEvaluation = async () => {
@@ -204,6 +247,8 @@ const TeacherDashboard = () => {
                 onStudentAnswerChange={setStudentAnswer}
                 onReferenceAnswerChange={setReferenceAnswer}
                 onReviewChange={setReview}
+                onAutoEvaluate={handleAutoEvaluate}
+                evaluating={evaluating}
               />
 
               <StudentResult

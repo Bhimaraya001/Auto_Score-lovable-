@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, FileText, MessageSquare } from "lucide-react";
+import { Upload, FileText, MessageSquare, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface UploadSectionsProps {
@@ -11,6 +11,8 @@ interface UploadSectionsProps {
   onStudentAnswerChange: (value: string) => void;
   onReferenceAnswerChange: (value: string) => void;
   onReviewChange: (value: string) => void;
+  onAutoEvaluate?: () => void;
+  evaluating?: boolean;
 }
 
 const UploadSections = ({
@@ -20,9 +22,46 @@ const UploadSections = ({
   onStudentAnswerChange,
   onReferenceAnswerChange,
   onReviewChange,
+  onAutoEvaluate,
+  evaluating = false,
 }: UploadSectionsProps) => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="space-y-6">
+      {/* Auto-Evaluate Button */}
+      {onAutoEvaluate && (
+        <Card className="p-4 shadow-card bg-gradient-to-r from-primary/5 to-secondary/5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <div>
+                <h3 className="font-semibold">AI-Powered Evaluation</h3>
+                <p className="text-xs text-muted-foreground">
+                  Automatically evaluate and generate feedback
+                </p>
+              </div>
+            </div>
+            <Button
+              onClick={onAutoEvaluate}
+              disabled={evaluating || !studentAnswer || !referenceAnswer}
+              className="min-w-[140px]"
+            >
+              {evaluating ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Evaluating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Auto-Evaluate
+                </>
+              )}
+            </Button>
+          </div>
+        </Card>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Student Answer Upload */}
       <Card className="p-6 shadow-card hover:shadow-hover transition-smooth group">
         <div className="flex items-center gap-3 mb-4">
@@ -114,6 +153,7 @@ const UploadSections = ({
           />
         </div>
       </Card>
+    </div>
     </div>
   );
 };

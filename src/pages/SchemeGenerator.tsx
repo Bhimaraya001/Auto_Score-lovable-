@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Loader2, Upload, FileText, BookOpen, ArrowLeft, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import collegeCampus from "@/assets/college-campus.jpg";
@@ -21,6 +23,8 @@ const SchemeGenerator = () => {
   const [questionPaper, setQuestionPaper] = useState("");
   const [generatedScheme, setGeneratedScheme] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [extractingTextbook, setExtractingTextbook] = useState(false);
+  const [extractingQuestion, setExtractingQuestion] = useState(false);
 
   useEffect(() => {
     if (!loading && (!user || profile?.role !== "teacher")) {
@@ -39,37 +43,76 @@ const SchemeGenerator = () => {
     }
 
     setIsGenerating(true);
-    
-    // Simulated generation - In production, this would call an AI service
-    setTimeout(() => {
-      const mockScheme = `ANSWER SCHEME GENERATED\n\n` +
-        `Based on the provided textbook content and question paper:\n\n` +
-        `1. Key Concepts Identified:\n` +
-        `   - Main topics covered\n` +
-        `   - Important definitions\n` +
-        `   - Core principles\n\n` +
-        `2. Suggested Answers:\n` +
-        `   - Detailed responses for each question\n` +
-        `   - Reference to specific textbook sections\n` +
-        `   - Mark allocation breakdown\n\n` +
-        `3. Evaluation Criteria:\n` +
-        `   - Points to look for in student answers\n` +
-        `   - Marking rubric\n` +
-        `   - Common mistakes to watch for`;
-      
-      setGeneratedScheme(mockScheme);
-      setIsGenerating(false);
-      
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-scheme", {
+        body: {
+          textbookContent,
+          questionPaper,
+        },
+      });
+
+      if (error) throw error;
+
+      setGeneratedScheme(data.scheme);
       toast({
         title: "Scheme Generated!",
         description: "Answer scheme has been created successfully",
       });
-    }, 2000);
+    } catch (error: any) {
+      console.error("Error generating scheme:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to generate scheme",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
+  };
+
+  const handleImageUpload = async (file: File, type: 'textbook' | 'question') => {
+    const setLoading = type === 'textbook' ? setExtractingTextbook : setExtractingQuestion;
+    const setContent = type === 'textbook' ? setTextbookContent : setQuestionPaper;
+
+    setLoading(true);
+    try {
+      // Convert image to base64
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result?.toString().split(',')[1];
+        
+        if (!base64String) {
+          throw new Error("Failed to read image");
+        }
+
+        const { data, error } = await supabase.functions.invoke("extract-text", {
+          body: { imageBase64: base64String },
+        });
+
+        if (error) throw error;
+
+        setContent((prev) => prev + (prev ? '\n\n' : '') + data.text);
+        toast({
+          title: "Text Extracted!",
+          description: "Successfully extracted text from image",
+        });
+      };
+      reader.readAsDataURL(file);
+    } catch (error: any) {
+      console.error("Error extracting text:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to extract text from image",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -135,17 +178,31 @@ const SchemeGenerator = () => {
                   <div className="space-y-2">
                     <Label>Textbook Text</Label>
                     <Textarea
-                      placeholder="Paste textbook content here or upload a document..."
+                      placeholder="Paste textbook content here or upload image..."
                       value={textbookContent}
                       onChange={(e) => setTextbookContent(e.target.value)}
-                      rows={15}
+                      rows={12}
                       className="font-mono text-sm"
                     />
                   </div>
-                  <Button variant="outline" className="w-full">
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload Textbook Document
-                  </Button>
+                  <div className="space-y-2">
+                    <Label>Or Upload Image</Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleImageUpload(file, 'textbook');
+                      }}
+                      disabled={extractingTextbook}
+                    />
+                    {extractingTextbook && (
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Extracting text...
+                      </p>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -162,17 +219,31 @@ const SchemeGenerator = () => {
                   <div className="space-y-2">
                     <Label>Questions</Label>
                     <Textarea
-                      placeholder="Paste question paper here or upload a document..."
+                      placeholder="Paste question paper here or upload image..."
                       value={questionPaper}
                       onChange={(e) => setQuestionPaper(e.target.value)}
-                      rows={15}
+                      rows={12}
                       className="font-mono text-sm"
                     />
                   </div>
-                  <Button variant="outline" className="w-full">
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload Question Paper
-                  </Button>
+                  <div className="space-y-2">
+                    <Label>Or Upload Image</Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleImageUpload(file, 'question');
+                      }}
+                      disabled={extractingQuestion}
+                    />
+                    {extractingQuestion && (
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Extracting text...
+                      </p>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
