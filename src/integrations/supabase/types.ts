@@ -24,6 +24,7 @@ export type Database = {
           reference_answer: string | null
           review: string | null
           student_answer: string | null
+          student_email: string | null
           student_id: string
           student_name: string
           subject: string
@@ -39,6 +40,7 @@ export type Database = {
           reference_answer?: string | null
           review?: string | null
           student_answer?: string | null
+          student_email?: string | null
           student_id: string
           student_name: string
           subject: string
@@ -54,6 +56,7 @@ export type Database = {
           reference_answer?: string | null
           review?: string | null
           student_answer?: string | null
+          student_email?: string | null
           student_id?: string
           student_name?: string
           subject?: string

@@ -75,27 +75,14 @@ const TeacherDashboard = () => {
     }
 
     try {
-      // Find student by email in profiles
-      const { data: studentProfile, error: profileError } = await supabase
-        .from("profiles")
-        .select("user_id, full_name")
-        .eq("role", "student")
-        .single();
-
-      if (profileError || !studentProfile) {
-        toast({
-          title: "Note",
-          description: "Evaluation will be saved. Student can view it when they register with this email.",
-        });
-      }
-
-      // Save evaluation - use found student_id or a placeholder
+      // Save evaluation with student_email - RLS will handle matching students by email
       const { error } = await supabase
         .from("evaluations")
         .insert({
           teacher_id: user!.id,
-          student_id: studentProfile?.user_id || user!.id, // Fallback to teacher id temporarily
+          student_id: user!.id, // Temporary placeholder, student_email is what matters
           student_name: studentEmail,
+          student_email: studentEmail,
           subject: courseData.subject,
           course_id: courseData.courseId,
           marks: parseInt(marks),
