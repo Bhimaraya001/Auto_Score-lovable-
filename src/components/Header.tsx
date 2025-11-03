@@ -17,7 +17,7 @@ const Header = ({ onToggleHistory, onSignOut, userName }: HeaderProps) => {
               <GraduationCap className="h-8 w-8" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">EvalScript</h1>
+              <h1 className="text-2xl font-bold tracking-tight">AutoScore</h1>
               <p className="text-sm text-primary-foreground/80">Answer Script Evaluation System</p>
             </div>
           </div>

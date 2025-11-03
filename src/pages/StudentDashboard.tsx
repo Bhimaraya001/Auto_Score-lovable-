@@ -104,7 +104,7 @@ const StudentDashboard = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <GraduationCap className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold gradient-text">EvalScript</h1>
+                <h1 className="text-xl font-bold gradient-text">AutoScore</h1>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-sm text-muted-foreground">
@@ -236,7 +236,7 @@ const StudentDashboard = () => {
 
         {/* Footer */}
         <footer className="container mx-auto px-4 py-6 text-center text-muted-foreground">
-          <p>&copy; 2025 EvalScript. All rights reserved.</p>
+          <p>&copy; 2025 AutoScore. All rights reserved.</p>
         </footer>
       </div>
     </div>

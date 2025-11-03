@@ -25,7 +25,7 @@ const Landing = () => {
         <header className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-2">
             <GraduationCap className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold gradient-text">EvalScript</h1>
+            <h1 className="text-2xl font-bold gradient-text">AutoScore</h1>
           </div>
         </header>
 
@@ -108,7 +108,7 @@ const Landing = () => {
 
         {/* Footer */}
         <footer className="container mx-auto px-4 py-6 text-center text-muted-foreground">
-          <p>&copy; 2025 EvalScript. All rights reserved.</p>
+          <p>&copy; 2025 AutoScore. All rights reserved.</p>
         </footer>
       </div>
     </div>

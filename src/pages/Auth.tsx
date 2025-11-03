@@ -107,7 +107,7 @@ const Auth = () => {
         <CardHeader className="space-y-1 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <GraduationCap className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold gradient-text">EvalScript</h1>
+            <h1 className="text-2xl font-bold gradient-text">AutoScore</h1>
           </div>
           <CardTitle className="text-2xl">
             {roleParam === "teacher" ? "Teacher Portal" : "Student Portal"}

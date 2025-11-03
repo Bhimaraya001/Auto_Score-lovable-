@@ -10,7 +10,7 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-4">Contact Us</h3>
             <div className="flex items-center gap-3 text-sm">
               <Mail className="h-4 w-4" />
-              <span>support@evalscript.com</span>
+              <span>support@autoscore.com</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <Phone className="h-4 w-4" />
@@ -51,7 +51,7 @@ const Footer = () => {
 
           {/* About */}
           <div className="space-y-3 animate-fade-in">
-            <h3 className="font-semibold text-lg mb-4">About EvalScript</h3>
+            <h3 className="font-semibold text-lg mb-4">About AutoScore</h3>
             <p className="text-sm text-primary-foreground/80">
               Your trusted partner in academic evaluation. Streamline your grading process with
               our modern, efficient answer script evaluation system.
@@ -65,7 +65,7 @@ const Footer = () => {
             educators worldwide
           </p>
           <p className="mt-2 text-primary-foreground/60">
-            © 2025 EvalScript. All rights reserved.
+            © 2025 AutoScore. All rights reserved.
           </p>
         </div>
       </div>
