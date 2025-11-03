@@ -1,5 +1,6 @@
-import { GraduationCap, Menu, LogOut } from "lucide-react";
+import { GraduationCap, Menu, LogOut, BookOpen, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface HeaderProps {
   onToggleHistory: () => void;
@@ -8,6 +9,10 @@ interface HeaderProps {
 }
 
 const Header = ({ onToggleHistory, onSignOut, userName }: HeaderProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isTeacherPage = location.pathname.startsWith("/teacher");
+
   return (
     <header className="gradient-primary text-primary-foreground shadow-card sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -22,7 +27,37 @@ const Header = ({ onToggleHistory, onSignOut, userName }: HeaderProps) => {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {isTeacherPage && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate("/teacher/dashboard")}
+                  className="hidden md:flex items-center gap-2 text-primary-foreground hover:bg-primary-foreground/10"
+                >
+                  Dashboard
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate("/teacher/questions")}
+                  className="hidden md:flex items-center gap-2 text-primary-foreground hover:bg-primary-foreground/10"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  Questions
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate("/teacher/scheme-generator")}
+                  className="hidden md:flex items-center gap-2 text-primary-foreground hover:bg-primary-foreground/10"
+                >
+                  <FileText className="h-4 w-4" />
+                  Scheme
+                </Button>
+              </>
+            )}
             {userName && (
               <span className="text-sm text-primary-foreground/90 hidden sm:inline">
                 Welcome, {userName}

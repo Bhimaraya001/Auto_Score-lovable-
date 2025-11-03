@@ -50,13 +50,13 @@ const QuestionBank = () => {
   const fetchQuestions = async () => {
     try {
       const { data, error } = await supabase
-        .from("questions")
+        .from("questions" as any)
         .select("*")
         .eq("teacher_id", user!.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setQuestions(data || []);
+      setQuestions(data as any || []);
     } catch (error) {
       console.error("Error fetching questions:", error);
     } finally {
@@ -76,13 +76,13 @@ const QuestionBank = () => {
 
     try {
       const { error } = await supabase
-        .from("questions")
+        .from("questions" as any)
         .insert({
           teacher_id: user!.id,
           subject: newQuestion.subject,
           question_text: newQuestion.question_text,
           marks: parseInt(newQuestion.marks),
-        });
+        } as any);
 
       if (error) throw error;
 
@@ -105,7 +105,7 @@ const QuestionBank = () => {
   const handleDeleteQuestion = async (id: string) => {
     try {
       const { error } = await supabase
-        .from("questions")
+        .from("questions" as any)
         .delete()
         .eq("id", id);
 
