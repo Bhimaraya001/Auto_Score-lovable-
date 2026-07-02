@@ -1,73 +1,77 @@
-# Welcome to your Lovable project
+# AutoScore – AI Powered Answer Evaluation System
 
-## Project info
+## Overview
 
-**URL**: https://lovable.dev/projects/7f3fa5fb-0999-4ca2-9150-27ac190d2c8f
+AutoScore is an AI-powered student answer evaluation system that analyzes descriptive answers by comparing them with reference answers using Google's Gemini API.
 
-## How can I edit this code?
+The application automatically generates marks, semantic analysis, and detailed feedback through a modern web interface.
 
-There are several ways of editing your application.
+This project was developed with the assistance of **Lovable AI** for the initial application scaffolding. The project was then customized by integrating the frontend and backend, implementing FastAPI services, connecting the Gemini API, and improving the overall application workflow.
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7f3fa5fb-0999-4ca2-9150-27ac190d2c8f) and start prompting.
+## Features
 
-Changes made via Lovable will be committed automatically to this repo.
+- AI-based descriptive answer evaluation
+- Reference answer comparison
+- Automatic score generation
+- Detailed feedback generation
+- Gemini API integration
+- FastAPI backend
+- React frontend
+- Responsive UI
+- REST API architecture
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Tech Stack
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
+### Frontend
+- React.js
 - TypeScript
-- React
-- shadcn-ui
 - Tailwind CSS
+- Shadcn UI
 
-## How can I deploy this project?
+### Backend
+- FastAPI
+- Python
 
-Simply open [Lovable](https://lovable.dev/projects/7f3fa5fb-0999-4ca2-9150-27ac190d2c8f) and click on Share -> Publish.
+### AI & NLP
+- Google Gemini API
+- Natural Language Processing
+- Semantic Similarity
 
-## Can I connect a custom domain to my Lovable project?
+### Database
+- Supabase
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Project Workflow
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+1. Student enters the answer.
+2. Reference answer is loaded.
+3. FastAPI sends the request to Gemini API.
+4. AI evaluates the answer using semantic similarity.
+5. Marks and feedback are generated.
+6. Results are displayed on the frontend.
+
+---
+
+## My Contributions
+
+- Developed and customized the project using Lovable AI as the initial scaffold.
+- Integrated the React frontend with the FastAPI backend.
+- Connected the Google Gemini API for AI-powered answer evaluation.
+- Implemented API communication between frontend and backend.
+- Improved the user interface and evaluation workflow.
+- Configured project structure and deployment.
+
+---
+
+## Future Improvements
+
+- OCR support for handwritten answer sheets.
+- Multi-language evaluation.
+- Teacher analytics dashboard.
+- PDF answer evaluation.
+- Student performance reports.
